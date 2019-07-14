@@ -1,12 +1,19 @@
 package com.udacity.giladna.bakingapp;
 
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.udacity.giladna.bakingapp.databinding.ActivityMainBinding;
 import com.udacity.giladna.bakingapp.model.Recipe;
 
+import com.udacity.giladna.bakingapp.ui.ClickCallback;
+import com.udacity.giladna.bakingapp.ui.MainAdapter;
+import com.udacity.giladna.bakingapp.ui.MainItemDecoration;
 import com.udacity.giladna.bakingapp.utilities.NetworkClient;
 import com.udacity.giladna.bakingapp.utilities.RecipesAPI;
 
@@ -16,14 +23,22 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ClickCallback<Recipe> {
 
-    private ProgressBar mLoadingIndicator;
+    private MainAdapter mAdapter;
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+        binding.activityMainProgressBar.setVisibility(View.VISIBLE);
+        binding.recipesList.setHasFixedSize(true);
+        binding.recipesList.addItemDecoration(new MainItemDecoration(MainActivity.this));
+
+        mAdapter = new MainAdapter(MainActivity.this,MainActivity.this);
+        binding.recipesList.setAdapter(mAdapter);
         fetchRecpiesAndStart();
 
     }
@@ -37,21 +52,18 @@ public class MainActivity extends AppCompatActivity {
         if (call == null) {
             return;
         }
-        if (mLoadingIndicator != null) {
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+
         call.enqueue(new retrofit2.Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call,
                                    Response<List<Recipe>> response) {
 
                 if (response.body() != null) {
+                    binding.activityMainProgressBar.setVisibility(View.GONE);
                     final List<Recipe> recipesList =  response.body();
-                    if (mLoadingIndicator != null) {
-                        mLoadingIndicator.setVisibility(View.INVISIBLE);
-                    }
-                    if (recipesList != null) {
 
+                    if (recipesList != null) {
+                        mAdapter.setList(recipesList);
                     } else {
                         showErrorMessage();
                     }
@@ -62,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call call, Throwable exception) {
                 showErrorMessage();
             }
+
         });
+        binding.activityMainProgressBar.setVisibility(View.VISIBLE);
 
     }
     private void showErrorMessage() {
@@ -70,7 +84,20 @@ public class MainActivity extends AppCompatActivity {
 //        mRecyclerView.setVisibility(View.INVISIBLE);
 //        /* Then, show the error */
 //        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        binding.activityMainProgressBar.setVisibility(View.GONE);
     }
 
 
+    @Override
+    public void onClick(Recipe recipe) {
+        Log.e("XXX", "XXXXXXXXXX onClick");
+//        Intent intent = new Intent(this, DetailActivity.class);
+//        intent.putExtra(INTENT_RECIPE_ID, recipe.getId());
+//        startActivity(intent);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
 }
