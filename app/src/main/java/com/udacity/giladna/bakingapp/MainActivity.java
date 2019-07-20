@@ -23,6 +23,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+//import static com.udacity.giladna.bakingapp.DetailActivity.INTENT_RECIPE_ID;
+
 public class MainActivity extends AppCompatActivity implements ClickCallback<Recipe> {
 
     private MainAdapter mAdapter;
@@ -91,9 +93,13 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
     @Override
     public void onClick(Recipe recipe) {
         Log.e("XXX", "XXXXXXXXXX onClick");
-//        Intent intent = new Intent(this, DetailActivity.class);
-//        intent.putExtra(INTENT_RECIPE_ID, recipe.getId());
-//        startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, RecipeListActivity.class);
+        intent.putExtra("recipe", recipe);
+        //intent.putParcelableArrayListExtra("recipeList", recipes);
+        startActivity(intent);
+        //Intent intent = new Intent(this, DetailActivity.class);
+        //intent.putExtra(INTENT_RECIPE_ID, recipe.getId());
+        //startActivity(intent);
     }
 
     @Override

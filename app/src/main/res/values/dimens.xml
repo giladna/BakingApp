@@ -16,5 +16,6 @@
     <dimen name="card_content_padding_zero">0dp</dimen>
     <dimen name="margin_card_2">2dp</dimen>
     <dimen name="margin_card_5">5dp</dimen>
-
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">450dp</dimen>
 </resources>

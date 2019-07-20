@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">BakingApp</string>
-    <string name="ingredients">Ingredients</string>
     <string name="steps">Steps</string>
     <string name="recipe_image_cd">Recipe image</string>
-
+    <string name="ingredients">Ingredients</string>
     <string name="button_previous">Previous</string>
     <string name="button_next">Next</string>
     <string name="button_watch">Watch</string>
@@ -12,7 +11,10 @@
     <string name="no_internet">No internet</string>
     <string name="pref_widget_key">pref_widget_key</string>
     <string name="pref_title_key">pref_title_key</string>
-
+    <string name="title_recipe_list">Recipes</string>
+    <string name="title_detail">Recipe Detail</string>
+    <string name="nextStep">Next Step</string>
+    <string name="noThumbnails"></string>
     <plurals name="serving_count">
         <item quantity="zero">%1$d servings</item>
         <item quantity="one">%1$d serving</item>
