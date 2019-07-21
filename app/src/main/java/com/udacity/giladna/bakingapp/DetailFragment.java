@@ -87,12 +87,7 @@ public class DetailFragment extends Fragment {
             (rootView.findViewById(R.id.recipe_detail)).setVisibility(View.GONE);
             (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
             int i = 0;
-            for (Ingredient ingredient : ingredients) {
-                String count = getColoredSpanned(++i + ") ", "#800000");
-                ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(Html.fromHtml(count));
-                ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(Html.fromHtml(getColoredSpanned(ingredient.getQuantity() + " " + ingredient.getMeasure() + " ",  "#000080")));
-                ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(ingredient.getIngredient().substring(0, 1).toUpperCase() + ingredient.getIngredient().substring(1) + " \n\n");
-            }
+            populateReceipeDesc(rootView, i);
         }
 
         if (step != null) {
@@ -109,7 +104,7 @@ public class DetailFragment extends Fragment {
                 Picasso.with(getContext())
                         .load(thumbnailUrl)
                         .error(R.drawable.error)
-                        .placeholder(R.drawable.error)
+                        .placeholder(R.drawable.placeholder)
                         .into(imageView);
 
             } else {
@@ -131,133 +126,17 @@ public class DetailFragment extends Fragment {
                 buttonPrev.setVisibility(View.GONE);
 
             } else {
-                if (position == 0) {
-                    buttonNext.setVisibility(View.VISIBLE);
-                    buttonPrev.setVisibility(View.GONE);
-                } else
-                if (position + 1 == stepsList.size()) {
-                    buttonNext.setVisibility(View.GONE);
-                    buttonPrev.setVisibility(View.VISIBLE);
-                } else {
-                    buttonNext.setVisibility(View.VISIBLE);
-                    buttonPrev.setVisibility(View.VISIBLE);
-                }
-
-
+                setButtonsVisibility(buttonNext, buttonPrev);
                 buttonNext.setOnClickListener(v -> {
-
-                    if (videoplaying) {
-                        simpleExoPlayer.stop();
-                    }
+                    stopExoplayer();
                     position++;
-
-                    if (position  == 0) {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.VISIBLE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.GONE);
-
-                    } else if (position + 1 == stepsList.size()) {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.GONE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.VISIBLE);
-
-                    } else {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.VISIBLE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.VISIBLE);
-
-                    }
-
-                    Step currStep = stepsList.get(position);
-                    String currStepThumbnailUrl = currStep.getThumbnailURL();
-                    if (!TextUtils.isEmpty(currStepThumbnailUrl) && (currStepThumbnailUrl.contains(".jpeg") || currStepThumbnailUrl.contains(".jpg") || currStepThumbnailUrl.contains("png"))) {
-
-                        ImageView imageView = rootView.findViewById(R.id.thumbnail_img);
-                        imageView.setVisibility(View.VISIBLE);
-
-                        Picasso.with(getContext())
-                                .load(thumbnailUrl)
-                                .error(R.drawable.error)
-                                .placeholder(R.drawable.error)
-                                .into(imageView);
-
-                    } else {
-                        rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
-                    }
-
-                    ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(currStep.getShortDescription());
-                    ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.getDescription());
-
-                    if (!TextUtils.isEmpty(currStep.getVideoURL())) {
-                        if (simpleExoPlayer == null) {
-                            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
-                        }
-                        mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
-                        simpleExoPlayer.prepare(mediaSource);
-                        simpleExoPlayer.setPlayWhenReady(true);
-                        videoplaying = true;
-                        ((PlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
-                        (rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
-                    } else {
-                        videoplaying = false;
-                        (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
-                    }
+                    handleButtonClick(rootView, thumbnailUrl, buttonNext, buttonPrev);
                 });
 
                 buttonPrev.setOnClickListener(v -> {
-
-                    if (videoplaying) {
-                        simpleExoPlayer.stop();
-                    }
+                    stopExoplayer();
                     position--;
-
-                    if (position  == 0) {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.VISIBLE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.GONE);
-
-                    } else if (position + 1 == stepsList.size()) {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.GONE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.VISIBLE);
-
-                    } else {
-                        (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.VISIBLE);
-                        (rootView.findViewById(R.id.prev_step_btn)).setVisibility(View.VISIBLE);
-
-                    }
-
-                    Step currStep = stepsList.get(position);
-                    String currStepThumbnailUrl = currStep.getThumbnailURL();
-                    if (!TextUtils.isEmpty(currStepThumbnailUrl) && (currStepThumbnailUrl.contains(".jpeg") || currStepThumbnailUrl.contains(".jpg") || currStepThumbnailUrl.contains("png"))) {
-
-                        ImageView imageView = rootView.findViewById(R.id.thumbnail_img);
-                        imageView.setVisibility(View.VISIBLE);
-
-                        Picasso.with(getContext())
-                                .load(thumbnailUrl)
-                                .error(R.drawable.error)
-                                .placeholder(R.drawable.error)
-                                .into(imageView);
-
-                    } else {
-                        rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
-                    }
-
-
-                    ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(currStep.getShortDescription());
-                    ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.getDescription());
-
-                    if (!TextUtils.isEmpty(currStep.getVideoURL())) {
-                        if (simpleExoPlayer == null) {
-                            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
-                        }
-
-                        mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
-                        simpleExoPlayer.prepare(mediaSource);
-                        simpleExoPlayer.setPlayWhenReady(true);
-                        videoplaying = true;
-                        ((PlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
-                        (rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
-                    } else {
-                        videoplaying = false;
-                        (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
-                    }
+                    handleButtonClick(rootView, thumbnailUrl, buttonNext, buttonPrev);
                 });
             }
 
@@ -265,6 +144,74 @@ public class DetailFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    private void populateReceipeDesc(View rootView, int i) {
+        for (Ingredient ingredient : ingredients) {
+            String count = getColoredSpanned(++i + ") ", getString(R.string.indexColor));
+            ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(Html.fromHtml(count));
+            ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(Html.fromHtml(getColoredSpanned(ingredient.getQuantity() + " " + ingredient.getMeasure() + " ",  getString(R.string.quantityColor))));
+            ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(ingredient.getIngredient().substring(0, 1).toUpperCase() + ingredient.getIngredient().substring(1) + " \n\n");
+        }
+    }
+
+    private void stopExoplayer() {
+        if (simpleExoPlayer != null && videoplaying) {
+            simpleExoPlayer.stop();
+        }
+    }
+
+    private void handleButtonClick(View rootView, String thumbnailUrl, Button buttonNext, Button buttonPrev) {
+        setButtonsVisibility(buttonNext, buttonPrev);
+
+        Step currStep = stepsList.get(position);
+        String currStepThumbnailUrl = currStep.getThumbnailURL();
+        if (!TextUtils.isEmpty(currStepThumbnailUrl) && (currStepThumbnailUrl.contains(".jpeg") || currStepThumbnailUrl.contains(".jpg") || currStepThumbnailUrl.contains("png"))) {
+
+            ImageView imageView = rootView.findViewById(R.id.thumbnail_img);
+            imageView.setVisibility(View.VISIBLE);
+
+            Picasso.with(getContext())
+                    .load(thumbnailUrl)
+                    .error(R.drawable.error)
+                    .placeholder(R.drawable.error)
+                    .into(imageView);
+
+        } else {
+            rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
+        }
+
+        ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(currStep.getShortDescription());
+        ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.getDescription());
+
+        if (!TextUtils.isEmpty(currStep.getVideoURL())) {
+            if (simpleExoPlayer == null) {
+                simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+            }
+            mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
+            simpleExoPlayer.prepare(mediaSource);
+            simpleExoPlayer.setPlayWhenReady(true);
+            videoplaying = true;
+            ((PlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
+            (rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
+        } else {
+            videoplaying = false;
+            (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+        }
+    }
+
+    private void setButtonsVisibility(Button buttonNext, Button buttonPrev) {
+        if (position == 0) {
+            buttonNext.setVisibility(View.VISIBLE);
+            buttonPrev.setVisibility(View.GONE);
+        } else
+        if (position + 1 == stepsList.size()) {
+            buttonNext.setVisibility(View.GONE);
+            buttonPrev.setVisibility(View.VISIBLE);
+        } else {
+            buttonNext.setVisibility(View.VISIBLE);
+            buttonPrev.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

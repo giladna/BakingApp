@@ -9,7 +9,7 @@
     android:orientation="horizontal"
     android:showDividers="middle"
     android:background="@color/backgroundColor"
-    tools:context=".RecipeListActivity"
+    tools:context=".RecipeActivity"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
 
@@ -54,7 +54,7 @@
             android:layout_height="match_parent"
 
             app:layoutManager="LinearLayoutManager"
-            tools:context=".RecipeListActivity"
+            tools:context=".RecipeActivity"
             tools:listitem="@layout/recipe_list_content" />
     </LinearLayout>
 

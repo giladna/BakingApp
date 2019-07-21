@@ -24,8 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class RecipeListActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity {
 
+    public static String INTENT_RECIPE = "recipe";
 
     private boolean mTwoPane;
 
@@ -61,7 +62,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
             } else {
 
-                Intent intent = new Intent(RecipeListActivity.this, DetailActivity.class);
+                Intent intent = new Intent(RecipeActivity.this, DetailActivity.class);
                 intent.putParcelableArrayListExtra("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
                 startActivity(intent);
             }
@@ -123,7 +124,7 @@ public class RecipeListActivity extends AppCompatActivity {
                                 .commit();
                     } else {
 
-                        Intent intent = new Intent(RecipeListActivity.this, DetailActivity.class);
+                        Intent intent = new Intent(RecipeActivity.this, DetailActivity.class);
                         intent.putExtra("recipe", getTitle());
                         intent.putExtra("step", mRecipeSteps.get(position));
                         intent.putExtra("position", position);

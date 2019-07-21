@@ -16,6 +16,8 @@
     <string name="nextStep">Next</string>
     <string name="noThumbnails"></string>
     <string name="prevStep">Prev</string>
+    <string name="indexColor">#800000</string>
+    <string name="quantityColor">\"#000080\"</string>
     <plurals name="serving_count">
         <item quantity="zero">%1$d servings</item>
         <item quantity="one">%1$d serving</item>

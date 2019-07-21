@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecipeListActivity"
+            android:name=".RecipeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_recipe_list"
             android:launchMode="singleTask"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="#ECEFF1"
-    tools:context=".RecipeListActivity">
+    tools:context=".RecipeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
