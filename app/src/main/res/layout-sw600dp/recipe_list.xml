@@ -24,14 +24,12 @@
             android:id="@+id/ingred_card_view"
             card_view:cardUseCompatPadding="true"
             card_view:cardElevation="5dp"
-android:backgroundTint="@color/cardColor"
-            >
+            android:backgroundTint="@color/cardColor">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
-                >
+                android:padding="16dp">
 
 
 
@@ -41,9 +39,7 @@ android:backgroundTint="@color/cardColor"
                     android:id="@+id/recipe_steps_tv"
                     android:textSize="15sp"
                     android:text="@string/ingredients"
-                    android:layout_centerInParent="true"
-
-                    />
+                    android:layout_centerInParent="true" />
 
 
 
@@ -53,7 +49,7 @@ android:backgroundTint="@color/cardColor"
         <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/recipe_list"
-            android:name="com.udacity.giladna.bakingapp.DetailFragment"
+            android:name=".DetailFragment"
             android:layout_width="@dimen/item_width"
             android:layout_height="match_parent"
 

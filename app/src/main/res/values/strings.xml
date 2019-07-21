@@ -13,8 +13,9 @@
     <string name="pref_title_key">pref_title_key</string>
     <string name="title_recipe_list">Recipes</string>
     <string name="title_detail">Recipe Detail</string>
-    <string name="nextStep">Next Step</string>
+    <string name="nextStep">Next</string>
     <string name="noThumbnails"></string>
+    <string name="prevStep">Prev</string>
     <plurals name="serving_count">
         <item quantity="zero">%1$d servings</item>
         <item quantity="one">%1$d serving</item>

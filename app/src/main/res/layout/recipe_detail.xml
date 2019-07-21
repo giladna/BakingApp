@@ -15,32 +15,32 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textIsSelectable="true"
-        tools:text="title"
-        />
+        tools:text="title" />
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginBottom="0dp"
+        android:layout_height="197dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <ImageView
         android:id="@+id/thumbnail_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <TextView
-        android:paddingTop="7dp"
         android:id="@+id/no_thumbnail_tv"
-       android:gravity="center"
-        android:text="@string/noThumbnails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:gravity="center"
+        android:paddingTop="7dp"
+        android:text="@string/noThumbnails"
+        android:visibility="gone" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -62,18 +62,46 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="17sp"
-                tools:text="Chocolate Cookies"/>
+                tools:text="Chocolate Cookies" />
 
 
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
-    <Button
-        android:id="@+id/next_step_btn"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/btnColor"
-        android:text="@string/nextStep"
-        android:visibility="invisible" />
+        android:layout_height="match_parent"
+        android:baselineAligned="false">
+
+        <Button
+            android:id="@+id/next_step_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="17dp"
+            android:backgroundTint="@color/btnColor"
+            android:text="@string/nextStep"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/prev_step_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="17dp"
+            android:backgroundTint="@color/btnColor"
+            android:text="@string/prevStep"
+            android:visibility="invisible" />
+    </RelativeLayout>
 </LinearLayout>

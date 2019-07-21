@@ -40,7 +40,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/recipe_list"
-        android:name="com.udacity.giladna.bakingapp.DetailFragment"
+        android:name=".DetailFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
