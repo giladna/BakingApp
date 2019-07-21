@@ -67,7 +67,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainAdapterVie
 
         void bind(Recipe recipe) {
             binding.setRecipe(recipe);
-
             if (!TextUtils.isEmpty(recipe.getImage())) {
                 Glide.with(mContext)
                         .load(recipe.getImage())
@@ -75,7 +74,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainAdapterVie
                         .placeholder(R.drawable.placeholder)
                         .into(binding.recipeImage);
             } else {
-                binding.recipeImage.setImageResource(R.drawable.placeholder);
+                String imgUrl = recipe.getImage();
+                switch (recipe.getId()) {
+                    case 1:
+                        binding.recipeImage.setImageResource(R.drawable.nutellapie);
+                        break;
+                    case 2:
+                        binding.recipeImage.setImageResource(R.drawable.brownies);
+                        break;
+                    case 3:
+                        binding.recipeImage.setImageResource(R.drawable.yellowcake);
+                        break;
+                    case 4:
+                        binding.recipeImage.setImageResource(R.drawable.cheesecake);
+                        break;
+                    default:
+                        binding.recipeImage.setImageResource(R.drawable.placeholder);
+
+                }
             }
         }
     }

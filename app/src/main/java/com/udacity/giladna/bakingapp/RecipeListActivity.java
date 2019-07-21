@@ -46,27 +46,24 @@ public class RecipeListActivity extends AppCompatActivity {
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cardView.setOnClickListener(v -> {
 
 
-                if (mTwoPane) {
-                    DetailFragment fragment = new DetailFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
+            if (mTwoPane) {
+                DetailFragment fragment = new DetailFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
 
-                    fragment.setArguments(bundle);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.recipe_detail_container, fragment)
-                            .commit();
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.recipe_detail_container, fragment)
+                        .commit();
 
-                } else {
+            } else {
 
-                    Intent intent = new Intent(RecipeListActivity.this, DetailActivity.class);
-                    intent.putParcelableArrayListExtra("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(RecipeListActivity.this, DetailActivity.class);
+                intent.putParcelableArrayListExtra("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
+                startActivity(intent);
             }
         });
 
@@ -127,6 +124,7 @@ public class RecipeListActivity extends AppCompatActivity {
                     } else {
 
                         Intent intent = new Intent(RecipeListActivity.this, DetailActivity.class);
+                        intent.putExtra("recipe", getTitle());
                         intent.putExtra("step", mRecipeSteps.get(position));
                         intent.putExtra("position", position);
                         intent.putParcelableArrayListExtra("stepsList", (ArrayList<? extends Parcelable>) steps);

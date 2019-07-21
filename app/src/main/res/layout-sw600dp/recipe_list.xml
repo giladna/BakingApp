@@ -24,7 +24,7 @@
             android:id="@+id/ingred_card_view"
             card_view:cardUseCompatPadding="true"
             card_view:cardElevation="5dp"
-            android:backgroundTint="@color/cardColor">
+            android:backgroundTint="@color/cardListColorTop">
 
             <RelativeLayout
                 android:layout_width="match_parent"

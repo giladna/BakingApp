@@ -15,7 +15,7 @@
         android:id="@+id/card_view"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="5dp"
-android:backgroundTint="@color/cardColor">
+        android:backgroundTint="@color/cardListColorBottom">
 
         <RelativeLayout
             android:layout_width="match_parent"

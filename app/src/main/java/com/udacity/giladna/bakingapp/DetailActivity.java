@@ -31,6 +31,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
         ingredients = getIntent().getParcelableArrayListExtra("ingredients");
+        String recipe = getIntent().getExtras().getString("recipe");
         step = getIntent().getExtras().getParcelable("step");
         position = getIntent().getExtras().getInt("position");
         stepsList = getIntent().getExtras().getParcelableArrayList("stepsList");
@@ -40,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
             setTitle("Ingredients");
         }
         if (step != null) {
-            setTitle("Recipe Steps");
+            setTitle(recipe + " Steps");
         }
 
 
