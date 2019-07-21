@@ -1,6 +1,5 @@
 package com.udacity.giladna.bakingapp;
 
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -29,7 +26,6 @@ import com.udacity.giladna.bakingapp.model.Step;
 import java.util.ArrayList;
 
 import static com.udacity.giladna.bakingapp.DetailActivity.INTENT_INGREDIENTS;
-
 
 public class DetailFragment extends Fragment {
 
