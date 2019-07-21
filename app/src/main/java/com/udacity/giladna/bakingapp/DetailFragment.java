@@ -28,8 +28,15 @@ import com.udacity.giladna.bakingapp.model.Step;
 
 import java.util.ArrayList;
 
+import static com.udacity.giladna.bakingapp.DetailActivity.INTENT_INGREDIENTS;
+
 
 public class DetailFragment extends Fragment {
+
+    public static String INTENT_STEP = "step";
+    public static String INTENT_POSITION = "position";
+    public static String INTENT_STEP_LIST = "stepsList";
+    public static String INTENT_TWO_PANE = "twoPane";
 
 
     private Step step;
@@ -49,11 +56,11 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        step = getArguments().getParcelable("step");
-        ingredients = getArguments().getParcelableArrayList("ingredients");
-        stepsList = getArguments().getParcelableArrayList("stepsList");
-        position = getArguments().getInt("position");
-        twoPane = getArguments().getBoolean("twoPane");
+        step = getArguments().getParcelable(INTENT_STEP);
+        ingredients = getArguments().getParcelableArrayList(INTENT_INGREDIENTS);
+        stepsList = getArguments().getParcelableArrayList(INTENT_STEP_LIST);
+        position = getArguments().getInt(INTENT_POSITION);
+        twoPane = getArguments().getBoolean(INTENT_TWO_PANE);
 
 
         if (step != null) {

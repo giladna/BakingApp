@@ -23,6 +23,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.udacity.giladna.bakingapp.DetailActivity.INTENT_INGREDIENTS;
+import static com.udacity.giladna.bakingapp.DetailFragment.INTENT_POSITION;
+import static com.udacity.giladna.bakingapp.DetailFragment.INTENT_STEP;
+import static com.udacity.giladna.bakingapp.DetailFragment.INTENT_STEP_LIST;
+import static com.udacity.giladna.bakingapp.DetailFragment.INTENT_TWO_PANE;
+
 
 public class RecipeActivity extends AppCompatActivity {
 
@@ -39,7 +45,7 @@ public class RecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
         ButterKnife.bind(this);
-        recipe = getIntent().getExtras().getParcelable("recipe");
+        recipe = getIntent().getExtras().getParcelable(INTENT_RECIPE);
         steps = recipe.getSteps();
         setTitle(recipe.getName());
         Toolbar t = findViewById(R.id.toolbar);
@@ -53,7 +59,7 @@ public class RecipeActivity extends AppCompatActivity {
             if (mTwoPane) {
                 DetailFragment fragment = new DetailFragment();
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
+                bundle.putParcelableArrayList(INTENT_INGREDIENTS, (ArrayList<? extends Parcelable>) recipe.getIngredients());
 
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
@@ -63,7 +69,7 @@ public class RecipeActivity extends AppCompatActivity {
             } else {
 
                 Intent intent = new Intent(RecipeActivity.this, DetailActivity.class);
-                intent.putParcelableArrayListExtra("ingredients", (ArrayList<? extends Parcelable>) recipe.getIngredients());
+                intent.putParcelableArrayListExtra(INTENT_INGREDIENTS, (ArrayList<? extends Parcelable>) recipe.getIngredients());
                 startActivity(intent);
             }
         });
@@ -116,8 +122,8 @@ public class RecipeActivity extends AppCompatActivity {
 
                         DetailFragment fragment = new DetailFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putParcelable("step", steps.get(position));
-                        bundle.putBoolean("twoPane", true);
+                        bundle.putParcelable(INTENT_STEP, steps.get(position));
+                        bundle.putBoolean(INTENT_TWO_PANE, true);
                         fragment.setArguments(bundle);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.recipe_detail_container, fragment)
@@ -125,10 +131,10 @@ public class RecipeActivity extends AppCompatActivity {
                     } else {
 
                         Intent intent = new Intent(RecipeActivity.this, DetailActivity.class);
-                        intent.putExtra("recipe", getTitle());
-                        intent.putExtra("step", mRecipeSteps.get(position));
-                        intent.putExtra("position", position);
-                        intent.putParcelableArrayListExtra("stepsList", (ArrayList<? extends Parcelable>) steps);
+                        intent.putExtra(INTENT_RECIPE, getTitle());
+                        intent.putExtra(INTENT_STEP, mRecipeSteps.get(position));
+                        intent.putExtra(INTENT_POSITION, position);
+                        intent.putParcelableArrayListExtra(INTENT_STEP_LIST, (ArrayList<? extends Parcelable>) steps);
                         startActivity(intent);
 
                     }
