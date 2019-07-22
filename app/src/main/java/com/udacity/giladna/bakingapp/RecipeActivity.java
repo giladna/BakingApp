@@ -114,7 +114,7 @@ public class RecipeActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-            holder.stepTV.setText("Step " + (position + 1) + " : " + mRecipeSteps.get(position).getShortDescription());
+            holder.stepTv.setText("Step " + (position + 1) + " : " + mRecipeSteps.get(position).getShortDescription());
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -149,17 +149,14 @@ public class RecipeActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView stepTV;
+            public final TextView stepTv;
 
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                stepTV = (TextView) view.findViewById(R.id.recipe_steps_tv);
-
+                stepTv = view.findViewById(R.id.recipe_steps_tv);
             }
-
-
         }
     }
 

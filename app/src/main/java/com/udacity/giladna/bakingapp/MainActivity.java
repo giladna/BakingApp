@@ -2,6 +2,10 @@ package com.udacity.giladna.bakingapp;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.view.View;
 import com.udacity.giladna.bakingapp.databinding.ActivityMainBinding;
 import com.udacity.giladna.bakingapp.model.Recipe;
 
+import com.udacity.giladna.bakingapp.test.SimpleIdlingResource;
 import com.udacity.giladna.bakingapp.ui.ClickCallback;
 import com.udacity.giladna.bakingapp.ui.MainAdapter;
 import com.udacity.giladna.bakingapp.ui.MainItemDecoration;
@@ -27,11 +32,14 @@ import static com.udacity.giladna.bakingapp.RecipeActivity.INTENT_RECIPE;
 public class MainActivity extends AppCompatActivity implements ClickCallback<Recipe> {
 
     private MainAdapter mAdapter;
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
+    @Nullable private SimpleIdlingResource mIdlingResource;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         binding.activityMainProgressBar.setVisibility(View.VISIBLE);
@@ -40,11 +48,15 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
 
         mAdapter = new MainAdapter(MainActivity.this,MainActivity.this);
         binding.recipesList.setAdapter(mAdapter);
+        getIdlingResource();
+        if (mIdlingResource != null){
+            mIdlingResource.setIdleState(false);
+        }
         fetchRecpiesAndStart();
-
     }
 
     private void fetchRecpiesAndStart() {
+
         Retrofit retrofit = NetworkClient.getRetrofitClient();
 
         RecipesAPI recipesAPI = retrofit.create(RecipesAPI.class);
@@ -65,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
 
                     if (recipesList != null) {
                         mAdapter.setList(recipesList);
+                        if (mIdlingResource != null) {
+                            mIdlingResource.setIdleState(true);
+                        }
                     } else {
                         showErrorMessage();
                     }
@@ -99,5 +114,15 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+    }
+
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 }
