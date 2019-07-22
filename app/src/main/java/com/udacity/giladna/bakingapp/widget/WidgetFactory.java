@@ -1,4 +1,4 @@
-package com.udacity.giladna.bakingapp;
+package com.udacity.giladna.bakingapp.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.udacity.giladna.bakingapp.R;
 import com.udacity.giladna.bakingapp.model.Ingredient;
 import com.udacity.giladna.bakingapp.model.Recipe;
 import com.udacity.giladna.bakingapp.utilities.NetworkClient;
@@ -14,6 +15,7 @@ import com.udacity.giladna.bakingapp.utilities.RecipesAPI;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -24,10 +26,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<Recipe> recipes;
 
     public WidgetFactory(Context applicationContext, Intent intent) {
-
         mContext = applicationContext;
-
-
     }
 
     @Override
@@ -49,7 +48,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public int getCount() {
         if (recipes != null) {
-            return recipes.size();
+            return 1;//recipes.size();
         } else {
             return 0;
         }
@@ -63,9 +62,8 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         String data = "";
         int i = 0;
         for (Ingredient ingredient : ingredients) {
-            data = data + (++i) + ". " + ingredient.getIngredient() + " \n";
+            data = data + (++i) + ") " + String.format(Locale.getDefault(), "%.1f %s %s", ingredient.getQuantity(), ingredient.getMeasure(), ingredient.getIngredient()) + " \n";
         }
-
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_lv_item);
         rv.setTextViewText(R.id.title, recipe.getName());

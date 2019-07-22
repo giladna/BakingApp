@@ -1,5 +1,7 @@
 package com.udacity.giladna.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.udacity.giladna.bakingapp.ui.MainAdapter;
 import com.udacity.giladna.bakingapp.ui.MainItemDecoration;
 import com.udacity.giladna.bakingapp.utilities.NetworkClient;
 import com.udacity.giladna.bakingapp.utilities.RecipesAPI;
+import com.udacity.giladna.bakingapp.widget.BakingAppWidget;
 
 import java.util.List;
 
@@ -109,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
         Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
         intent.putExtra(INTENT_RECIPE, recipe);
         startActivity(intent);
+        //Update Widget
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
+        BakingAppWidget.updateFromActivity(this, appWidgetManager, appWidgetIds, recipe);
     }
 
     @Override

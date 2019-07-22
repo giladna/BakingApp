@@ -1,4 +1,4 @@
-package com.udacity.giladna.bakingapp;
+package com.udacity.giladna.bakingapp.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -8,11 +8,12 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 
+import com.udacity.giladna.bakingapp.R;
 import com.udacity.giladna.bakingapp.model.Ingredient;
 import com.udacity.giladna.bakingapp.model.Recipe;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class BakingAppWidget extends AppWidgetProvider {
@@ -32,29 +33,28 @@ public class BakingAppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
-    static void updateFromActivity(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int itemClicked, ArrayList<Recipe> recipes) {
+    public static void updateFromActivity(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, Recipe recipe) {
 
 
         for (int appWidgetId : appWidgetIds) {
 
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.updated_widget_layout);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
 
-            List<Ingredient> ingredients = recipes.get(itemClicked).getIngredients();
+            List<Ingredient> ingredients = recipe.getIngredients();
             int i = 0;
             String data = "";
+
             for (Ingredient ingredient : ingredients) {
-                data = data + (++i) + ". " + ingredient.getIngredient().substring(0, 1).toUpperCase() + ingredient.getIngredient().substring(1) + " \n";
+                data = data + (++i) + ") " + String.format(Locale.getDefault(), "%.1f %s %s", ingredient.getQuantity(), ingredient.getMeasure(), ingredient.getIngredient()) + " \n";
             }
-
-            views.setTextViewText(R.id.widget_title, recipes.get(itemClicked).getName() + " Ingredients");
-            views.setTextViewText(R.id.widget_content, data);
-
+//
+            views.setTextViewText(R.id.title, recipe.getName());
+            views.setTextViewText(R.id.data, data);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
