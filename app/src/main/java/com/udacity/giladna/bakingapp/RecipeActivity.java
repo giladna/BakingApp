@@ -55,7 +55,6 @@ public class RecipeActivity extends AppCompatActivity {
 
         cardView.setOnClickListener(v -> {
 
-
             if (mTwoPane) {
                 DetailFragment fragment = new DetailFragment();
                 Bundle bundle = new Bundle();
@@ -80,7 +79,7 @@ public class RecipeActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
 
-        View recyclerView = findViewById(R.id.recipe_list);
+        View recyclerView = findViewById(R.id.recipe_steps_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
