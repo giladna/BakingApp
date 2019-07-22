@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 import com.udacity.giladna.bakingapp.model.Ingredient;
 import com.udacity.giladna.bakingapp.model.Step;
@@ -255,16 +256,6 @@ public class DetailFragment extends Fragment {
 
     }
 
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (player != null) {
-            curPosition = player.getCurrentPosition();
-            player.stop();
-        }
-    }
-
     private void releasePlayer() {
         if (player != null) {
             lastPosition = player.getCurrentPosition();
@@ -286,8 +277,18 @@ public class DetailFragment extends Fragment {
 
     @Override
     public void onPause() {
-        releasePlayer();
         super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
 
     @Override
