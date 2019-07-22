@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:padding="8dp"
+        android:id="@+id/appwidget_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cardview_light_background"
+        android:text="@string/ingredients"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimary"/>
+    <ListView
+        android:padding="8dp"
+        android:background="@color/backgroundColor"
+        android:id="@+id/widget_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+</LinearLayout>
