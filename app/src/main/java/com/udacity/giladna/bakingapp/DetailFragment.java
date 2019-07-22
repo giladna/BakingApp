@@ -2,6 +2,7 @@ package com.udacity.giladna.bakingapp;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
@@ -30,17 +31,23 @@ import static com.udacity.giladna.bakingapp.DetailActivity.INTENT_INGREDIENTS;
 public class DetailFragment extends Fragment {
 
     public static String INTENT_STEP = "step";
-    public static String INTENT_POSITION = "position";
+    public static String INTENT_POSITION = "stepNumber";
     public static String INTENT_STEP_LIST = "stepsList";
     public static String INTENT_TWO_PANE = "twoPane";
 
 
+    private static final String LAST_POSITION = "last_position";
+    private static final String IS_PLAYING = "is_playing";
+    private static final String STEP_NUMBER = "step_number";
+
     private Step step;
-    private SimpleExoPlayer simpleExoPlayer;
+    private SimpleExoPlayer player;
+    PlayerView playerView;
+    private long lastPosition;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> stepsList;
-    private int position;
-    private boolean videoplaying;
+    private int stepNumber;
+    private boolean isPlaying;
     private boolean twoPane = false;
     long curPosition;
     MediaSource mediaSource;
@@ -52,22 +59,42 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        stepNumber = -1;
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(LAST_POSITION)) {
+                lastPosition = savedInstanceState.getLong(LAST_POSITION);
+            }
+
+            if (savedInstanceState.containsKey(IS_PLAYING)) {
+                isPlaying = savedInstanceState.getBoolean(IS_PLAYING);
+            }
+
+            if (savedInstanceState.containsKey(STEP_NUMBER)) {
+                stepNumber = savedInstanceState.getInt(STEP_NUMBER);
+            }
+        }
+
         step = getArguments().getParcelable(INTENT_STEP);
         ingredients = getArguments().getParcelableArrayList(INTENT_INGREDIENTS);
         stepsList = getArguments().getParcelableArrayList(INTENT_STEP_LIST);
-        position = getArguments().getInt(INTENT_POSITION);
+        stepNumber = getArguments().getInt(INTENT_POSITION);
         twoPane = getArguments().getBoolean(INTENT_TWO_PANE);
+    }
 
-
+    private void initializePlayer() {
         if (step != null) {
-
-            if (simpleExoPlayer == null) {
-                simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+            if (player == null) {
+                player = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+                playerView.setPlayer(player);
             }
-
+            playerView.setVisibility(View.VISIBLE);
             mediaSource = buildMediaSource(Uri.parse(step.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
-            simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
+
+            player.prepare(mediaSource);
+            player.seekTo(lastPosition);
+            player.setPlayWhenReady(true);
+            isPlaying = true;
         }
     }
 
@@ -85,10 +112,11 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
-
+        playerView = rootView.findViewById(R.id.playerView);
+        initializePlayer();
         if (ingredients != null) {
             (rootView.findViewById(R.id.recipe_detail)).setVisibility(View.GONE);
-            (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+            playerView.setVisibility(View.GONE);
             int i = 0;
             populateReceipeDesc(rootView, i);
         }
@@ -115,12 +143,11 @@ public class DetailFragment extends Fragment {
             }
 
             if (step.getVideoURL() != null && !step.getVideoURL().isEmpty()) {
-                videoplaying = true;
-                ((PlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
+                isPlaying = true;
+                playerView.setPlayer(player);
             } else {
-                videoplaying = false;
-
-                (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+                isPlaying = false;
+                playerView.setVisibility(View.GONE);
             }
             Button buttonNext = rootView.findViewById(R.id.next_step_btn);
             Button buttonPrev = rootView.findViewById(R.id.prev_step_btn);
@@ -132,13 +159,15 @@ public class DetailFragment extends Fragment {
                 setButtonsVisibility(buttonNext, buttonPrev);
                 buttonNext.setOnClickListener(v -> {
                     stopExoplayer();
-                    position++;
+                    stepNumber++;
                     handleButtonClick(rootView, thumbnailUrl, buttonNext, buttonPrev);
                 });
 
                 buttonPrev.setOnClickListener(v -> {
                     stopExoplayer();
-                    position--;
+                    stepNumber--;
+
+
                     handleButtonClick(rootView, thumbnailUrl, buttonNext, buttonPrev);
                 });
             }
@@ -159,15 +188,18 @@ public class DetailFragment extends Fragment {
     }
 
     private void stopExoplayer() {
-        if (simpleExoPlayer != null && videoplaying) {
-            simpleExoPlayer.stop();
+        if (player != null && isPlaying) {
+            isPlaying = false;
+            lastPosition = 0;
+            player.stop();
         }
     }
 
     private void handleButtonClick(View rootView, String thumbnailUrl, Button buttonNext, Button buttonPrev) {
         setButtonsVisibility(buttonNext, buttonPrev);
 
-        Step currStep = stepsList.get(position);
+        Step currStep = stepsList.get(stepNumber);
+        step = currStep;
         String currStepThumbnailUrl = currStep.getThumbnailURL();
         if (!TextUtils.isEmpty(currStepThumbnailUrl) && (currStepThumbnailUrl.contains(".jpeg") || currStepThumbnailUrl.contains(".jpg") || currStepThumbnailUrl.contains("png"))) {
 
@@ -177,7 +209,7 @@ public class DetailFragment extends Fragment {
             Picasso.with(getContext())
                     .load(thumbnailUrl)
                     .error(R.drawable.error)
-                    .placeholder(R.drawable.error)
+                    .placeholder(R.drawable.placeholder)
                     .into(imageView);
 
         } else {
@@ -188,27 +220,26 @@ public class DetailFragment extends Fragment {
         ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.getDescription());
 
         if (!TextUtils.isEmpty(currStep.getVideoURL())) {
-            if (simpleExoPlayer == null) {
-                simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
-            }
-            mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
-            simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
-            videoplaying = true;
-            ((PlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
-            (rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
+            initializePlayer();
+//            if (player == null) {
+//                player = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+//            }
+//            mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
+//            player.prepare(mediaSource);
+//            player.setPlayWhenReady(true);
+
         } else {
-            videoplaying = false;
-            (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+            isPlaying = false;
+            playerView.setVisibility(View.GONE);
         }
     }
 
     private void setButtonsVisibility(Button buttonNext, Button buttonPrev) {
-        if (position == 0) {
+        if (stepNumber == 0) {
             buttonNext.setVisibility(View.VISIBLE);
             buttonPrev.setVisibility(View.GONE);
         } else
-        if (position + 1 == stepsList.size()) {
+        if (stepNumber + 1 == stepsList.size()) {
             buttonNext.setVisibility(View.GONE);
             buttonPrev.setVisibility(View.VISIBLE);
         } else {
@@ -228,30 +259,40 @@ public class DetailFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (simpleExoPlayer != null) {
-            curPosition = simpleExoPlayer.getCurrentPosition();
-            simpleExoPlayer.stop();
+        if (player != null) {
+            curPosition = player.getCurrentPosition();
+            player.stop();
         }
     }
 
     private void releasePlayer() {
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.stop();
-            simpleExoPlayer.release();
-            simpleExoPlayer = null;
+        if (player != null) {
+            lastPosition = player.getCurrentPosition();
+            isPlaying = player.getPlayWhenReady();
+
+            player.stop();
+            player.release();
+            player = null;
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(LAST_POSITION, lastPosition);
+        outState.putBoolean(IS_PLAYING, isPlaying);
+        outState.putInt(STEP_NUMBER, stepNumber);
+    }
+
+    @Override
+    public void onPause() {
+        releasePlayer();
+        super.onPause();
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.seekTo(curPosition);
-            simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
-        }
+        initializePlayer();
     }
-
-
 }
