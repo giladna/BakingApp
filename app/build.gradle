@@ -52,6 +52,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+
     // ExoPlayer
     def exoPlayerVersion = '2.9.6'
     api "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion"

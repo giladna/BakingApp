@@ -1,7 +1,5 @@
 package com.udacity.giladna.bakingapp;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -13,17 +11,22 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.udacity.giladna.bakingapp.databinding.ActivityMainBinding;
+import com.udacity.giladna.bakingapp.db.AppDatabase;
 import com.udacity.giladna.bakingapp.model.Recipe;
 
+import com.udacity.giladna.bakingapp.model.RecipeView;
 import com.udacity.giladna.bakingapp.test.SimpleIdlingResource;
 import com.udacity.giladna.bakingapp.ui.ClickCallback;
 import com.udacity.giladna.bakingapp.ui.MainAdapter;
 import com.udacity.giladna.bakingapp.ui.MainItemDecoration;
 import com.udacity.giladna.bakingapp.utilities.NetworkClient;
 import com.udacity.giladna.bakingapp.utilities.RecipesAPI;
+import com.udacity.giladna.bakingapp.utilities.WidgetUtil;
 import com.udacity.giladna.bakingapp.widget.BakingAppWidget;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
     private MainAdapter mAdapter;
     private ActivityMainBinding binding;
     @Nullable private SimpleIdlingResource mIdlingResource;
+    private AppDatabase appDatabase;
 
 
     @Override
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
         if (mIdlingResource != null){
             mIdlingResource.setIdleState(false);
         }
+        appDatabase = AppDatabase.getAppDatabase(this);
         fetchRecpiesAndStart();
     }
 
@@ -80,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
 
                     if (recipesList != null) {
                         mAdapter.setList(recipesList);
+                        final Executor executor = Executors.newFixedThreadPool(2);
+                        executor.execute(() -> {
+                            List<RecipeView> recipeViews = appDatabase.recipeDao().getRecipes();
+                            if (recipeViews.size() != recipesList.size()) {
+                                appDatabase.recipeDao().insertRecipes(recipesList);
+                            }
+                        });
+
                         if (mIdlingResource != null) {
                             mIdlingResource.setIdleState(true);
                         }
@@ -99,24 +112,19 @@ public class MainActivity extends AppCompatActivity implements ClickCallback<Rec
 
     }
     private void showErrorMessage() {
-        /* First, hide the currently visible data */
-//        mRecyclerView.setVisibility(View.INVISIBLE);
-//        /* Then, show the error */
-//        mErrorMessageDisplay.setVisibility(View.VISIBLE);
         binding.activityMainProgressBar.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onClick(Recipe recipe) {
+        BakingAppWidget.sendWidgetUpdate(this, recipe);
         Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
         intent.putExtra(INTENT_RECIPE, recipe);
         startActivity(intent);
-        //Update Widget
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
-        BakingAppWidget.updateFromActivity(this, appWidgetManager, appWidgetIds, recipe);
     }
+
+
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {

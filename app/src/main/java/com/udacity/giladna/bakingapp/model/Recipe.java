@@ -1,5 +1,8 @@
 package com.udacity.giladna.bakingapp.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,23 +11,32 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Entity
 public class Recipe implements Parcelable {
 
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("name")
     @Expose
     private String name;
+
+    @Ignore
     @SerializedName("ingredients")
     @Expose
     private List<Ingredient> ingredients = null;
+
+    @Ignore
     @SerializedName("steps")
     @Expose
     private List<Step> steps = null;
+
     @SerializedName("servings")
     @Expose
     private Integer servings;
+
     @SerializedName("image")
     @Expose
     private String image;
