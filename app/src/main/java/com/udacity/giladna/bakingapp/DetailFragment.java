@@ -74,12 +74,13 @@ public class DetailFragment extends Fragment {
             if (savedInstanceState.containsKey(STEP_NUMBER)) {
                 stepNumber = savedInstanceState.getInt(STEP_NUMBER);
             }
+        } else {
+            stepNumber = getArguments().getInt(INTENT_POSITION);
         }
 
         step = getArguments().getParcelable(INTENT_STEP);
         ingredients = getArguments().getParcelableArrayList(INTENT_INGREDIENTS);
         stepsList = getArguments().getParcelableArrayList(INTENT_STEP_LIST);
-        stepNumber = getArguments().getInt(INTENT_POSITION);
         twoPane = getArguments().getBoolean(INTENT_TWO_PANE);
     }
 
@@ -222,13 +223,6 @@ public class DetailFragment extends Fragment {
 
         if (!TextUtils.isEmpty(currStep.getVideoURL())) {
             initializePlayer();
-//            if (player == null) {
-//                player = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
-//            }
-//            mediaSource = buildMediaSource(Uri.parse(currStep.getVideoURL()), new DefaultDataSourceFactory(getContext(), "User-Agent-BakingApp"));
-//            player.prepare(mediaSource);
-//            player.setPlayWhenReady(true);
-
         } else {
             isPlaying = false;
             playerView.setVisibility(View.GONE);
@@ -270,6 +264,10 @@ public class DetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (player != null) {
+            lastPosition = player.getCurrentPosition();
+            isPlaying = player.getPlayWhenReady();
+        }
         outState.putLong(LAST_POSITION, lastPosition);
         outState.putBoolean(IS_PLAYING, isPlaying);
         outState.putInt(STEP_NUMBER, stepNumber);

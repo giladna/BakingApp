@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
-public class RecipeIngrdientsTest {
+public class RecipeIngredientsTest {
 
     private IdlingResource mIdlingResource;
 
